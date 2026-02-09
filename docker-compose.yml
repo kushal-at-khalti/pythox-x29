@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  api:
+    build: .
+    container_name: pythox_x29_app
+    ports:
+      - "8000:8000"
+    restart: always
