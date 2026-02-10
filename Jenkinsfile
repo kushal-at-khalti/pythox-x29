@@ -17,7 +17,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: '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',
+                    credentialsId: '6251e0b1-ad19-4c4b-9c30-d4ab57b56030',
                     url: 'https://github.com/kushal-at-khalti/pythox-x29.git'
             }
         }
