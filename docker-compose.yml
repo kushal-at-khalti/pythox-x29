@@ -1,12 +1,15 @@
-version: "3.9"
-
 services:
   app:
     build: .
     container_name: pythox-x29-app
     ports:
-      - "${HOST_PORT}:8000"
-    environment:
-      - APP_ENV=${APP_ENV}
-      - GUNICORN_WORKERS=${GUNICORN_WORKERS}
+      - "${HOST_PORT}:8001"
+    env_file:
+      - .env
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
