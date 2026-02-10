@@ -40,7 +40,7 @@ pipeline {
 
     post {
         success {
-            echo " Deployment successful to ${params.env}!"
+            echo " Deployment successful to ${params.Build-PROD}!"
         }
         failure {
             echo " Deployment failed!"
