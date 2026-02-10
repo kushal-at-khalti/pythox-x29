@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'Build-PROD',
+            choices: ['prod', 'dev'],
+            description: 'Which environment to build/deploy?'
+        )
+    }
+
     environment {
         APP_NAME = "pythox-x29-app"
     }
@@ -9,21 +17,21 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: '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',  // Jenkins credentials
-                    url: 'https://github.com/YOUR-GITHUB-USER/pythox-x29.git'
+                    credentialsId: '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',
+                    url: 'https://github.com/kushal-at-khalti/pythox-x29.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker compose build'
+                sh 'docker compose build --no-cache'
             }
         }
 
         stage('Deploy Application') {
             steps {
                 sh '''
-                docker compose down
+                docker compose down || true
                 docker compose up -d
                 '''
             }
@@ -32,7 +40,7 @@ pipeline {
 
     post {
         success {
-            echo " Deployment successful!"
+            echo " Deployment successful to ${params.ENV}!"
         }
         failure {
             echo " Deployment failed!"
