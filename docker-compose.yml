@@ -1,9 +1,12 @@
-version: "3.8"
+version: "3.9"
 
 services:
-  api:
+  app:
     build: .
-    container_name: pythox_x29_app
+    container_name: pythox-x29-app
     ports:
-      - "8000:8000"
-    restart: always
+      - "${HOST_PORT}:8000"
+    environment:
+      - APP_ENV=${APP_ENV}
+      - GUNICORN_WORKERS=${GUNICORN_WORKERS}
+    restart: unless-stopped
