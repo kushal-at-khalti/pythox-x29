@@ -24,7 +24,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker compose build --no-cache'
+                sh 'docker-compose build --no-cache'
             }
         }
 
@@ -40,7 +40,7 @@ pipeline {
 
     post {
         success {
-            echo " Deployment successful to ${params.ENV}!"
+            echo " Deployment successful to ${params.env}!"
         }
         failure {
             echo " Deployment failed!"
