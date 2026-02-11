@@ -1,4 +1,4 @@
-name: Deploy to Production
+name: Production Deploy
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout (optional)
         uses: actions/checkout@v4
 
       - name: Setup SSH
@@ -18,14 +18,18 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github_action_key
           chmod 600 ~/.ssh/github_action_key
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p ${{ secrets.SERVER_PORT }} -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy to Server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /opt/pythox-x29
-            git pull origin main
-            docker compose down
-            docker compose build
-            docker compose up -d
+          ssh -i ~/.ssh/github_action_key \
+              -p ${{ secrets.SERVER_PORT }} \
+              -o StrictHostKeyChecking=yes \
+              ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+              
+              cd /opt/pythox-x29
+              git pull origin main
+              docker compose down
+              docker compose build
+              docker compose up -d
           EOF
