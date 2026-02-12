@@ -52,7 +52,7 @@ pipeline {
             echo "Deployment successful! ${HOST_PORT}"
         }
         failure {
-            echo "Deployment failed!"
+            echo "Deployment failed !"
         }
     }
 }
