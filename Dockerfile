@@ -1,18 +1,11 @@
-FROM python:3.10-slim
+FROM coredns/coredns:1.9.1
 
-WORKDIR /app
+LABEL maintainer=<system@khalti.com>
 
-# Install system deps (optional but safe)
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+ARG DATACENTER="dc1"
 
-COPY requirements.txt .
+COPY ./coredns-config /coredns-config
+COPY ./common /common
+COPY ./datacenter/${DATACENTER} /datacenter
 
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8001
-
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8001"]
+CMD ["-conf", "/coredns-config/Corefile"]

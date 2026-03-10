@@ -1,15 +1,28 @@
+version: '3.7'
 services:
-  app:
-    build: .
-    container_name: pythox-x29-app
+  coredns:
+    image: kcr.khalti.com.np/opstool/coredns-prod:latest-${DATACENTER}
+    hostname: coredns-{{.Task.Slot}}
     ports:
-      - "${HOST_PORT}:8001"
-    env_file:
-      - .env
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      - 53:53/udp
+    networks:
+      - coredns
+    deploy:
+      mode: global
+      labels:
+        environment: "prod"
+        project: coredns
+        app_layer: "infra"
+      resources:
+        limits:
+          cpus: '2'
+          memory: '4G'
+
+networks:
+  coredns:
+    name: coredns
+    driver: overlay
+    ipam:
+      config:
+        - subnet: 10.203.3.64/26
+
